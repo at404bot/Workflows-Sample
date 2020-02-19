@@ -1,0 +1,46 @@
+name: Get Epic Game
+
+on:
+  # 每周二 UTC 时间 8:30 自动触发，使用前取消注释
+  # schedule:
+  #   - cron: "30 8 * * 2"
+  repository_dispatch: 
+    types: epicgame
+
+jobs:
+  MainWork:
+    runs-on: ubuntu-latest
+    steps:      
+      - name: Clone Claimer Repository
+        uses: actions/checkout@v2
+        with:
+          repository: Revadike/epicgames-freebies-claimer
+          path: workdir
+
+      # 在 Settings - Secrets 添加 EMAIL (你的 Epic 邮箱)，PASSWD (你的 Epic 密码)
+      - name: Get Gift
+        run: |
+          cd workdir
+          npm install
+          node gimme_free_epic_shit '${{ secrets.EMAIL }}' '${{ secrets.PASSWD }}' > games.info
+
+
+      # 如果需要推送到 Telegram 用来提示的话
+      # - name: Edit Gift.info
+      #   if: always()
+      #   run: |
+      #     cd workdir
+      #     sed -i '1d' games.info
+      #     sed -i 's/Successfully claimed/成功领取/' games.info
+      #     sed -i 's/was already claimed for this account/已经领取/' games.info
+      #     sed -i '$d' games.info
+      # 
+      # 这部分的内容可以查看 https://www.github.com/appleboy/telegram-action
+      # - name: Send Gift Info
+      #   if: always()
+      #   uses: appleboy/telegram-action@master
+      #   with:
+      #     to: "Chat ID"
+      #     token: "TelegramBot 的 Token"
+      #     format: markdown
+      #     message_file: workdir/games.info
