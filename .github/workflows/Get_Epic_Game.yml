@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: Revadike/epicgames-freebies-claimer
+          ref: '70cd47a55c628822dfc4a68a53670f1ecea22c96'
           path: workdir
 
       # 在 'Settings' - 'Secrets' 添加 EMAIL (你的 Epic 邮箱)，PASSWD (你的 Epic 密码)
