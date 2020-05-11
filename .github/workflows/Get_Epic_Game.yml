@@ -1,11 +1,11 @@
 name: Get Epic Game
 
 on:
-  # 每周五 UTC 时间 2:25 (中国时间周五 10：25)自动触发，使用前取消注释，即删除下面两行的前面的 #
-  #schedule:
-  #  - cron: "25 2 * * 5"
-  repository_dispatch: 
-    types: epicgame
+#  schedule: # 删除本行开头的 # 号
+#    - cron: "25 2 * * *" # 删除本行开头的 # 号
+  push:
+    branches:
+      - master
 
 jobs:
   MainWork:
@@ -17,16 +17,16 @@ jobs:
       - name: Clone Claimer Repository
         uses: actions/checkout@v2
         with:
-          repository: Revadike/epicgames-freebies-claimer
-          ref: '70cd47a55c628822dfc4a68a53670f1ecea22c96'
+          repository: lingsamuel/epicgames-freebies-claimer
+          ref: 'aa21c57d0ef19948a4f2864207173c86d5c0ffb7'
           path: workdir
 
-      # 在 'Settings' - 'Secrets' 添加 EMAIL (你的 Epic 邮箱)，PASSWD (你的 Epic 密码)
+      # 在 'Settings' - 'Secrets' 添加 EMAIL (你的 Epic 邮箱)，PASSWD (你的 Epic 密码)，SECRET（二步验证 Secret）
       - name: Get Gifts
         run: |
           cd workdir
           npm install
-          node gimme_free_epic_shit '${{ secrets.EMAIL }}' '${{ secrets.PASSWD }}' > games.info
+          node claimer '${{ secrets.EMAIL }}' '${{ secrets.PASSWD }}' 0 '${{ secrets.SECRET }}' > games.info
 
       - name: Edit Games.info
         if: always()
